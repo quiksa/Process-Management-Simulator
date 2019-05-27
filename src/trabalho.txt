@@ -1,0 +1,21 @@
+Objetivo:   Implementar um simulador de gerenciamento de processador.
+Características básicas:
+    • A linguagem para implementação do simulador é livre, bem como o sistema operacional no qual o simulador irá executar;
+    • Considere os seguintes estados possíveis para os processos: Apto, Executando e Bloqueado;
+    • Considere a existência de um único processador no sistema, portanto somente um processo estará na situação “Executando” a cada momento, 
+        mas haverá uma fila de processos “Aptos” e uma fila de “Bloqueados”;
+    • É preciso criar uma estrutura de dados para representar o bloco descritor do processo;
+Funcionalidades:
+    • O simulador deve implementar os algoritmos de escalonamento de curto prazo: FIFO, SJF e RR (supor uma fatia de tempo = 4, mas deixar configurável).
+    • A entrada dos dados ocorre por meio de um arquivo texto, conforme modelo disponibilizado no virtual:
+        o Cada linha do arquivo representa um processo;
+        o Os campos são separados uns dos outros por meio do caracter “;”
+        o O primeiro campo é o identificador do processo;
+        o Os campos seguintes indicam o tipo de operação que o processo irá fazer a cada ciclo de processador. Por exemplo, a linha a seguir indica que 
+            o processo de id 777 começa com 5 ciclos de processador, depois solicita uma operação de entrada e saída que irá durar 2 ciclos 
+            e por fim executa mais 2 ciclos de CPU. “777;CPU;CPU;CPU;CPU;CPU;ES;ES;CPU;CPU”
+    • Como saída o programa deve exibir um log (em tela ou arquivo) para cada algoritmo de escalonamento com os seguintes dados:
+        o Sequência de uso do processador (qual processo ocupou cada fatia de tempo);
+        o Número total de trocas de contexto;
+        o Tempo médio de espera (de todos os processos do arquivo);
+        o Variância do tempo de espera (de todos os processos do arquivo). Esta é a fórmula da variância:

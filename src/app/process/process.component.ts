@@ -11,16 +11,16 @@ export class ProcessComponent implements OnInit {
   pid: string;
 
   @Input() textArea;
-  
+
   constructor(private utilService: UtilsService) { }
 
-  
+
 
   ngOnInit() {
 
   }
 
-  getData() {
+  start() {
     this.pid = this.generatePID();
   }
 
@@ -49,6 +49,36 @@ export class ProcessComponent implements OnInit {
     pid += "-";
     pid += this.getRandon();
     return pid;
+  }
+
+  getStatus(estado) {
+    switch (estado) {
+      case estado.NOVO:
+        return {
+          nome: "Novo",
+          cor: "preto"
+        };
+      case estado.PRONTO:
+        return {
+          nome: "Pronto",
+          cor: "azul"
+        };
+      case estado.EM_EXECUCAO:
+        return {
+          nome: "Executando",
+          cor: "verde"
+        };
+      case estado.EM_ESPERA:
+        return {
+          nome: "Esperando",
+          cor: "amarelo"
+        };
+      case estado.ENCERRADO:
+        return {
+          nome: "Encerrado",
+          cor: "vermelho"
+        };
+    }
   }
 
 }
