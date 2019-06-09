@@ -11,6 +11,7 @@ export class ProcessComponent implements OnInit {
 
   pid: string;
 
+  @Input() operacao
   @Input() textArea;
 
   constructor(private utilService: UtilsService) { }
@@ -20,8 +21,21 @@ export class ProcessComponent implements OnInit {
   }
 
   start() {
+    if (!this.textArea) {
+      alert('Selecione um arquivo!')
+    }
+    if (!this.operacao) {
+      alert('Selecione o algoritmo!')
+    }
+
     let data = new descProc(this.textArea)
-    this.execProcess(data.processList)
+    if (this.operacao == 'fifo') {
+      this.execProcess(data.processList)
+    } else if (this.operacao == 'ssf') {
+
+    } else if (this.operacao == 'rr') {
+
+    }
   }
 
   execProcess(processList) {

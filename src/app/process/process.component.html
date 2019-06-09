@@ -17,6 +17,19 @@
           </p>
           <label for="exampleInputEmail1">Tempo(ms)</label>
           <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Tempo">
+          <label style="margin-top: 10px" for="exampleInputEmail1">Algoritmo</label>
+          <div class="custom-control custom-radio">
+            <input [(ngModel)]="operacao" type="radio" id="customRadioInline1" name="customRadioInline1" value="fifo" class="custom-control-input">
+            <label class="custom-control-label" for="customRadioInline1">FIFO</label>
+          </div>
+          <div class="custom-control custom-radio">
+            <input [(ngModel)]="operacao" type="radio" id="customRadioInline2" name="customRadioInline1" value="ssf" class="custom-control-input">
+            <label class="custom-control-label" for="customRadioInline2">SSF</label>
+          </div>
+          <div class="custom-control custom-radio">
+            <input [(ngModel)]="operacao" type="radio" id="customRadioInline3" name="customRadioInline1" value="rr" class="custom-control-input">
+            <label class="custom-control-label" for="customRadioInline3">RR</label>
+          </div>
         </div>
       </div>
       <button class="btn btn-outline-dark" (click)="start()">Iniciar</button>
