@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { UtilsService } from '../utils.service';
+import { descProc } from '../classes/descProc';
 
 @Component({
   selector: 'app-process',
@@ -14,19 +15,24 @@ export class ProcessComponent implements OnInit {
 
   constructor(private utilService: UtilsService) { }
 
-
-
   ngOnInit() {
 
   }
 
   start() {
-    this.pid = this.generatePID();
+    let data = new descProc(this.textArea)
+    this.execProcess(data.processList)
   }
 
-  //Gera código randômico hexadecimal de 4 dígitos
-  getRandon() {
-    return ((1 + Math.random()) * 100000 | 0).toString(16).substring(1);
+  execProcess(processList) {
+    debugger
+    while (processList.length > 0) {
+      let x = 0;
+      while (processList[x].cycle) {
+
+      }
+      x++
+    }
   }
 
   fileLoad(e) {
@@ -39,16 +45,6 @@ export class ProcessComponent implements OnInit {
       this.textArea = fileReader.result
     }
     fileReader.readAsText(file);
-  }
-
-  //Junta os códigos randômicos para gerar um id único
-  generatePID() {
-    var pid = "" + this.getRandon() + this.getRandon();
-    pid += "-";
-    pid += this.getRandon() + this.getRandon();
-    pid += "-";
-    pid += this.getRandon();
-    return pid;
   }
 
   getStatus(estado) {
