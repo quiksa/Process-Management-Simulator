@@ -23,31 +23,40 @@ export class descProc {
                 let process = new Process();
                 let array = element.split(':')
                 process.pid = array[0]
-                process.cycle = new Array<Map<string, number>>()
+                process.status = 'apto'
+                process.cycle = new Array<Object>()
                 let operacao = array[1].split(';')
                 while (operacao.length > 0) {
                     let x = 0;
-                    let processCPU = new Map<string, number>();
+                    let processCPU = new Object;
                     let cpu = 0;
                     while (operacao[x] == 'CPU') {
-                        console.log(operacao[x])
+                        //console.log(operacao[x])
                         cpu++
                         operacao.splice(operacao[x], 1)
                     }
                     if (cpu) {
-                        processCPU.set('CPU', cpu)
+                        processCPU = {
+                            operation: 'CPU',
+                            cicly: cpu
+                        }
+                        //processCPU.set('CPU', cpu)
                         process.cycle.push(processCPU)
                     }
 
-                    let processES = new Map<string, number>();
+                    let processES = new Object;
                     let es = 0;
                     while (operacao[x] == 'ES') {
-                        console.log(operacao[x])
+                        //console.log(operacao[x])
                         es++
                         operacao.splice(operacao[x], 1)
                     }
                     if (es) {
-                        processES.set('ES', es)
+                        processES = {
+                            operation: 'ES',
+                            cicly: es
+                        }
+                        //processES.set('ES', es)
                         process.cycle.push(processES)
                     }
                     x++

@@ -23,8 +23,8 @@
             <label class="custom-control-label" for="customRadioInline1">FIFO</label>
           </div>
           <div class="custom-control custom-radio">
-            <input [(ngModel)]="operacao" type="radio" id="customRadioInline2" name="customRadioInline1" value="ssf" class="custom-control-input">
-            <label class="custom-control-label" for="customRadioInline2">SSF</label>
+            <input [(ngModel)]="operacao" type="radio" id="customRadioInline2" name="customRadioInline1" value="sjf" class="custom-control-input">
+            <label class="custom-control-label" for="customRadioInline2">SJF</label>
           </div>
           <div class="custom-control custom-radio">
             <input [(ngModel)]="operacao" type="radio" id="customRadioInline3" name="customRadioInline1" value="rr" class="custom-control-input">
@@ -33,4 +33,7 @@
         </div>
       </div>
       <button class="btn btn-outline-dark" (click)="start()">Iniciar</button>
+      <div >
+        <app-fcfs></app-fcfs>
+      </div>
 </div>

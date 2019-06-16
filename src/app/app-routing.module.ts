@@ -1,9 +1,9 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { ProcessComponent } from './process/process.component';
+import { SchedulerComponent } from './scheduler/scheduler.component';
 
 const routes: Routes = [
-  { path: 'simulator', component: ProcessComponent },
+  { path: 'simulator', component: SchedulerComponent },
 ];
 
 @NgModule({

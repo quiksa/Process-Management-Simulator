@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { FifoComponent } from './fifo.component';
+import { FcfsComponent } from './fcfs.component';
 
-describe('FifoComponent', () => {
-  let component: FifoComponent;
-  let fixture: ComponentFixture<FifoComponent>;
+describe('FcfsComponent', () => {
+  let component: FcfsComponent;
+  let fixture: ComponentFixture<FcfsComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ FifoComponent ]
+      declarations: [ FcfsComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(FifoComponent);
+    fixture = TestBed.createComponent(FcfsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
