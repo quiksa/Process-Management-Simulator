@@ -2,6 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
 import { ChartjsModule } from '@ctrl/ngx-chartjs';
+import { NgApexchartsModule } from 'node_modules/ng-apexcharts'
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -23,7 +24,8 @@ import { RrComponent } from './rr/rr.component';
     BrowserModule,
     FormsModule,
     ChartjsModule,
-    AppRoutingModule
+    AppRoutingModule,
+    NgApexchartsModule
   ],
   providers: [UtilsService],
   bootstrap: [AppComponent]

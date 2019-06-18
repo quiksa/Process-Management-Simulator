@@ -42,21 +42,81 @@ export class SchedulerComponent implements OnInit {
     debugger
     let bloqList = new Array<any>();
     let x = 0;
-    while (processList.length > x) {
-      let y = 0;
-      while (processList[x].cycle.length > y) {
-        //insere na lista de bloqueados quando tiver ES
-        if (processList[x].cycle[y].operation == 'ES') {
-          processList[x].status = 'bloqueado'
-          bloqList.push(processList[x])
-          processList.splice(x, 1)
-        } else {
+    let removeListaBloq = null;
+    let removeListaProcess = null;
+    let exitBloqFor = false;
+    for (let index = 0; index < processList.length; index++) {
+      const process = processList[index];
+      //processList.forEach((process,index) => {
+      let numClycles = 0;
+      let numEs = 0;
+      if (process.status === 'apto') {
+        let progamExec = process.pid;
 
+        for (let indexC = 0; indexC < process.cycle.length; indexC++) {
+          const cycle = process.cycle[indexC];
+          //process.cycle.forEach((cycle, indexC) => {
+
+          if (bloqList.length > 0) {
+            for (let indexPB = 0; indexPB < bloqList.length; indexPB++) {
+              
+              if(exitBloqFor){
+                break;
+              }
+
+              const bloq = bloqList[indexPB];
+
+              //bloqList.forEach((bloq, indexB) => {
+              for (let indexCB = 0; indexCB < bloq.cycle.length; indexCB++) {
+                const bloqCycle = bloq.cycle[indexCB];
+                
+                //});
+                let sum = indexCB + 1;
+                let sumP = indexPB + 1;
+                if (bloq.cycle[sum].operation === 'CPU' && bloq.cycle[sum].status === 'apto') {
+                  processList.push(bloqList[indexPB]);
+                  removeListaBloq = indexPB;
+                }
+
+                if (bloqCycle.operation === 'ES' && bloqCycle.status === 'apto') {
+                  //bloq.cycle.forEach(element => {
+                  if (bloqCycle.status === 'apto') {
+                    bloqCycle.status = 'executado'; // Executou ES
+                    numEs++;
+                    bloqList.splice(indexPB,1);
+                    exitBloqFor = true;
+                    break;
+                  }
+                }
+
+              }
+            }
+            //});
+          }
+          exitBloqFor = false;
+          //remove da lsita
+          if(removeListaBloq){
+            bloqList.splice(removeListaBloq,1);
+            removeListaBloq = null;
+          }
+
+          if (cycle.operation === 'CPU' && cycle.status === 'apto') {
+            cycle.status = 'executado'; //executou
+            numClycles++;
+          }
+          let val = indexC + 1;
+          if (processList[index].cycle[val].operation === 'ES' && processList[index].cycle[val].status === 'apto') {
+            bloqList.push(process);
+            processList.splice(index,1);
+            index--;
+            break;
+          }
         }
-        y++
+        //})
+        console.log('PID ' + progamExec + ' num Cycles: ' + numClycles + ' num es ' + numEs);
       }
-      x++
     }
+    //})
   }
 
   fileLoad(e) {
