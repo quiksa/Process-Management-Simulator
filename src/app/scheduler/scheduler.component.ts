@@ -13,6 +13,7 @@ export class SchedulerComponent implements OnInit {
 
   @Input() operacao
   @Input() textArea;
+  @Input() tempo;
 
   constructor(private utilService: UtilsService) { }
 
@@ -30,93 +31,250 @@ export class SchedulerComponent implements OnInit {
 
     let data = new descProc(this.textArea)
     if (this.operacao == 'fifo') {
-      this.execProcess(data.processList)
+      this.execProcessFifo(data.processList)
     } else if (this.operacao == 'sjf') {
-
+      this.execProcessSjf(data.processList);
     } else if (this.operacao == 'rr') {
+      if(!this.tempo){
+        alert('Selecione o tempo');
+      }
+      this.execProcessRr(data.processList);
+    }
+  }
+
+  execProcessRr(processList: Array<any>){
+
+    let bloqList = new Array<any>(); // Lista para colocar os bloqueados
+    let execList = new Array<any>(); // Lista para colocar o processo que está executando
+    let ciclos  = 0; // Contar os ciclos
+
+    while(processList.length > 0 || execList.length > 0 || bloqList.length > 0){ // Caso as listas estejam vazias terminou os precessos, saí do while
+      debugger
+      let es = 0; // Contar as ES
+      let pid = 0; // Salvar o PID que está sendo executao (usado somente para printar)
+      let terminouProcesso = false; // Usado somente para printar se o processo terminou no final do while
+      let mandarListaBloq = false; // Caso precise colocar um processo na lista de bloqueado é utilizado essa boolean (é adicionado um processo na lista de bloqueado somente no final do while)
+      let cpu = 0; // Contar os CPU
+      let pides = 0; // Exibir os ES dos processos expecíficos
+
+      if(processList.length > 0 && execList.length === 0){ // Caso exista processo e a lista de execução está vazia é preciso colocar o próximo processo para excutar
+        if(processList[0].cycle[0].operation === 'CPU'){ // se for CPU coloca na lista de execução e remove da lista de processos 
+          execList.push(processList[0]); // Adicionando na lista de execuação
+          processList.splice(0,1); // Removendo da lista de processos
+        }
+      }
+      if(execList.length > 0){ // Se a lista de execução não está vazia executa o processo
+        if(execList[0].cycle[0].operation === 'CPU'){ // Se for CPU executa
+          pid = execList[0].pid; // Salva o PID para exibir no final
+          execList[0].cycle.splice(0,1); // Executa o CPU  (Remove da lista pois foi executado)
+          cpu ++; // Soma os processos
+        }
+        if(execList[0].cycle[0] === null || execList[0].cycle[0] === undefined || execList[0].cycle[0] === ''){ // Se a lista de execução está vazia o processo terminou
+          terminouProcesso = true; // Boolean para exibir no final que o processo terminou
+          execList.splice(0,1); // remove da lista de execução (não sei se precisa)
+        }else 
+        if(execList[0].cycle[0].operation === 'ES'){ // Se ainda existir processo na lista de execução verifica se é ES
+          mandarListaBloq = true; // Boolean para indicar que é preciso mandor o processo para a lista de bloqueado
+        }
+      }
+
+      if(bloqList.length > 0){ // Se a lista de bloqueados não está vazia
+        if(bloqList[0].cycle[0].operation === 'ES'){ // Se for ES executa
+          pides = bloqList[0].pid; // Salva o PID do processo que fez ES para exibir no final
+          bloqList[0].cycle.splice(0,1); // Executa o ES (Remove da lista de bloqueado)
+          es ++; // Soma ES para exibir no final
+        }
+        if(bloqList[0].cycle[0].operation === 'CPU'){ // Se a lista de bloqueado for CPU
+          processList.push(bloqList[0]); // Coloca de volta na lista de processos (apto)
+          bloqList.splice(0,1); // Remove da lista de bloqueados
+        }
+        
+      }
+
+      if(mandarListaBloq){ // Se precisa adicionar na lista de bloqueado
+        bloqList.push(execList[0]); // Coloca processo na lista de bloqueados
+        execList.splice(0,1); // Remove processo da lista de execução
+      }
+
+      ciclos++; // Incrementa o ciclo
+
+      // Exibte informações no log para fins de debug
+      console.log('CICLO: ' + ciclos + ', PID: ' + pid + ', CPU: ' + cpu + ', PIDES: ' + pides + ' ES: ' + es);
+      if(terminouProcesso){
+        cpu = 0;
+        console.log('PID: ' + pid + ' PRONTO');
+      }
+
+    }
+
+  }
+
+  execProcessSjf(processList: Array<any>){
+    let bloqList = new Array<any>(); // Lista para colocar os bloqueados
+    let execList = new Array<any>(); // Lista para colocar o processo que está executando
+    let ciclos  = 0; // Contar os ciclos
+
+    while(processList.length > 0 || execList.length > 0 || bloqList.length > 0){ // Caso as listas estejam vazias terminou os precessos, saí do while
+      debugger
+      processList = this.ordernarSjf(processList); // Ordena a lista
+      let es = 0; // Contar as ES
+      let pid = 0; // Salvar o PID que está sendo executao (usado somente para printar)
+      let terminouProcesso = false; // Usado somente para printar se o processo terminou no final do while
+      let mandarListaBloq = false; // Caso precise colocar um processo na lista de bloqueado é utilizado essa boolean (é adicionado um processo na lista de bloqueado somente no final do while)
+      let cpu = 0; // Contar os CPU
+      let pides = 0; // Exibir os ES dos processos expecíficos
+
+      if(processList.length > 0 && execList.length === 0){ // Caso exista processo e a lista de execução está vazia é preciso colocar o próximo processo para excutar
+        if(processList[0].cycle[0].operation === 'CPU'){ // se for CPU coloca na lista de execução e remove da lista de processos 
+          execList.push(processList[0]); // Adicionando na lista de execuação
+          processList.splice(0,1); // Removendo da lista de processos
+        }
+      }
+      if(execList.length > 0){ // Se a lista de execução não está vazia executa o processo
+        if(execList[0].cycle[0].operation === 'CPU'){ // Se for CPU executa
+          pid = execList[0].pid; // Salva o PID para exibir no final
+          execList[0].cycle.splice(0,1); // Executa o CPU  (Remove da lista pois foi executado)
+          cpu ++; // Soma os processos
+        }
+        if(execList[0].cycle[0] === null || execList[0].cycle[0] === undefined || execList[0].cycle[0] === ''){ // Se a lista de execução está vazia o processo terminou
+          terminouProcesso = true; // Boolean para exibir no final que o processo terminou
+          execList.splice(0,1); // remove da lista de execução (não sei se precisa)
+        }else 
+        if(execList[0].cycle[0].operation === 'ES'){ // Se ainda existir processo na lista de execução verifica se é ES
+          mandarListaBloq = true; // Boolean para indicar que é preciso mandor o processo para a lista de bloqueado
+        }
+      }
+
+      if(bloqList.length > 0){ // Se a lista de bloqueados não está vazia
+        if(bloqList[0].cycle[0].operation === 'ES'){ // Se for ES executa
+          pides = bloqList[0].pid; // Salva o PID do processo que fez ES para exibir no final
+          bloqList[0].cycle.splice(0,1); // Executa o ES (Remove da lista de bloqueado)
+          es ++; // Soma ES para exibir no final
+        }
+        if(bloqList[0].cycle[0].operation === 'CPU'){ // Se a lista de bloqueado for CPU
+          processList.push(bloqList[0]); // Coloca de volta na lista de processos (apto)
+          bloqList.splice(0,1); // Remove da lista de bloqueados
+        }
+        
+      }
+
+      if(mandarListaBloq){ // Se precisa adicionar na lista de bloqueado
+        bloqList.push(execList[0]); // Coloca processo na lista de bloqueados
+        execList.splice(0,1); // Remove processo da lista de execução
+      }
+
+      ciclos++; // Incrementa o ciclo
+
+      // Exibte informações no log para fins de debug
+      console.log('CICLO: ' + ciclos + ', PID: ' + pid + ', CPU: ' + cpu + ', PIDES: ' + pides + ' ES: ' + es);
+      if(terminouProcesso){
+        cpu = 0;
+        console.log('PID: ' + pid + ' PRONTO');
+      }
 
     }
   }
 
-  execProcess(processList: Array<any>) {
-    debugger
-    let bloqList = new Array<any>();
-    let x = 0;
-    let removeListaBloq = null;
-    let removeListaProcess = null;
-    let exitBloqFor = false;
-    for (let index = 0; index < processList.length; index++) {
-      const process = processList[index];
-      //processList.forEach((process,index) => {
-      let numClycles = 0;
-      let numEs = 0;
-      if (process.status === 'apto') {
-        let progamExec = process.pid;
+  execProcessFifo(processList: Array<any>) {
+    let bloqList = new Array<any>(); // Lista para colocar os bloqueados
+    let execList = new Array<any>(); // Lista para colocar o processo que está executando
+    let ciclos  = 0; // Contar os ciclos
 
-        for (let indexC = 0; indexC < process.cycle.length; indexC++) {
-          const cycle = process.cycle[indexC];
-          //process.cycle.forEach((cycle, indexC) => {
+    while(processList.length > 0 || execList.length > 0 || bloqList.length > 0){ // Caso as listas estejam vazias terminou os precessos, saí do while
+      debugger
+      let es = 0; // Contar as ES
+      let pid = 0; // Salvar o PID que está sendo executao (usado somente para printar)
+      let terminouProcesso = false; // Usado somente para printar se o processo terminou no final do while
+      let mandarListaBloq = false; // Caso precise colocar um processo na lista de bloqueado é utilizado essa boolean (é adicionado um processo na lista de bloqueado somente no final do while)
+      let cpu = 0; // Contar os CPU
+      let pides = 0; // Exibir os ES dos processos expecíficos
 
-          if (bloqList.length > 0) {
-            for (let indexPB = 0; indexPB < bloqList.length; indexPB++) {
-              
-              if(exitBloqFor){
-                break;
-              }
-
-              const bloq = bloqList[indexPB];
-
-              //bloqList.forEach((bloq, indexB) => {
-              for (let indexCB = 0; indexCB < bloq.cycle.length; indexCB++) {
-                const bloqCycle = bloq.cycle[indexCB];
-                
-                //});
-                let sum = indexCB + 1;
-                let sumP = indexPB + 1;
-                if (bloq.cycle[sum].operation === 'CPU' && bloq.cycle[sum].status === 'apto') {
-                  processList.push(bloqList[indexPB]);
-                  removeListaBloq = indexPB;
-                }
-
-                if (bloqCycle.operation === 'ES' && bloqCycle.status === 'apto') {
-                  //bloq.cycle.forEach(element => {
-                  if (bloqCycle.status === 'apto') {
-                    bloqCycle.status = 'executado'; // Executou ES
-                    numEs++;
-                    bloqList.splice(indexPB,1);
-                    exitBloqFor = true;
-                    break;
-                  }
-                }
-
-              }
-            }
-            //});
-          }
-          exitBloqFor = false;
-          //remove da lsita
-          if(removeListaBloq){
-            bloqList.splice(removeListaBloq,1);
-            removeListaBloq = null;
-          }
-
-          if (cycle.operation === 'CPU' && cycle.status === 'apto') {
-            cycle.status = 'executado'; //executou
-            numClycles++;
-          }
-          let val = indexC + 1;
-          if (processList[index].cycle[val].operation === 'ES' && processList[index].cycle[val].status === 'apto') {
-            bloqList.push(process);
-            processList.splice(index,1);
-            index--;
-            break;
-          }
+      if(processList.length > 0 && execList.length === 0){ // Caso exista processo e a lista de execução está vazia é preciso colocar o próximo processo para excutar
+        if(processList[0].cycle[0].operation === 'CPU'){ // se for CPU coloca na lista de execução e remove da lista de processos 
+          execList.push(processList[0]); // Adicionando na lista de execuação
+          processList.splice(0,1); // Removendo da lista de processos
         }
-        //})
-        console.log('PID ' + progamExec + ' num Cycles: ' + numClycles + ' num es ' + numEs);
       }
+      if(execList.length > 0){ // Se a lista de execução não está vazia executa o processo
+        if(execList[0].cycle[0].operation === 'CPU'){ // Se for CPU executa
+          pid = execList[0].pid; // Salva o PID para exibir no final
+          execList[0].cycle.splice(0,1); // Executa o CPU  (Remove da lista pois foi executado)
+          cpu ++; // Soma os processos
+        }
+        if(execList[0].cycle[0] === null || execList[0].cycle[0] === undefined || execList[0].cycle[0] === ''){ // Se a lista de execução está vazia o processo terminou
+          terminouProcesso = true; // Boolean para exibir no final que o processo terminou
+          execList.splice(0,1); // remove da lista de execução (não sei se precisa)
+        }else 
+        if(execList[0].cycle[0].operation === 'ES'){ // Se ainda existir processo na lista de execução verifica se é ES
+          mandarListaBloq = true; // Boolean para indicar que é preciso mandor o processo para a lista de bloqueado
+        }
+      }
+
+      if(bloqList.length > 0){ // Se a lista de bloqueados não está vazia
+        if(bloqList[0].cycle[0].operation === 'ES'){ // Se for ES executa
+          pides = bloqList[0].pid; // Salva o PID do processo que fez ES para exibir no final
+          bloqList[0].cycle.splice(0,1); // Executa o ES (Remove da lista de bloqueado)
+          es ++; // Soma ES para exibir no final
+        }
+        if(bloqList[0].cycle[0].operation === 'CPU'){ // Se a lista de bloqueado for CPU
+          processList.push(bloqList[0]); // Coloca de volta na lista de processos (apto)
+          bloqList.splice(0,1); // Remove da lista de bloqueados
+        }
+        
+      }
+
+      if(mandarListaBloq){ // Se precisa adicionar na lista de bloqueado
+        bloqList.push(execList[0]); // Coloca processo na lista de bloqueados
+        execList.splice(0,1); // Remove processo da lista de execução
+      }
+
+      ciclos++; // Incrementa o ciclo
+
+      // Exibte informações no log para fins de debug
+      console.log('CICLO: ' + ciclos + ', PID: ' + pid + ', CPU: ' + cpu + ', PIDES: ' + pides + ' ES: ' + es);
+      if(terminouProcesso){
+        cpu = 0;
+        console.log('PID: ' + pid + ' PRONTO');
+      }
+
     }
-    //})
+
+  }
+
+  // Função para adicionar o total dos primeiros CPUS na lista de processo para fins de ordenação
+  contarCPU(process: any){
+
+    let totalCPU = 0;
+
+    for (let index = 0; index < process.cycle.length; index++) {
+      const element = process.cycle[index];
+        if(element.operation === 'CPU'){
+          totalCPU ++;
+        }else{
+          process.totalCPU = totalCPU;
+          return process;
+        }
+    }
+    process.totalCPU = totalCPU;
+    return process;
+
+  }
+
+  // Função para ordenar a lista de processos
+  ordernarSjf(processList: Array<any>){
+
+    let listaOrdenada: Array<any>;
+    let maiorCPU = 0;
+
+     processList.forEach((element,index) => {
+       processList[index] = this.contarCPU(element);
+     });
+     
+     processList.sort(function(a,b){return a.totalCPU - b.totalCPU});
+
+     return processList;
+
+
   }
 
   fileLoad(e) {

@@ -16,7 +16,7 @@
             <a href="https://docs.google.com/document/d/1zhxaR5vAEfc6iDkvDfjtBh-w82e_Ow8H5iffpZGxgfg/edit?usp=sharing">link</a>
           </p>
           <label for="exampleInputEmail1">Tempo(ms)</label>
-          <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Tempo">
+          <input type="email" [(ngModel)]="tempo" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Tempo">
           <label style="margin-top: 10px" for="exampleInputEmail1">Algoritmo</label>
           <div class="custom-control custom-radio">
             <input [(ngModel)]="operacao" type="radio" id="customRadioInline1" name="customRadioInline1" value="fifo" class="custom-control-input">
