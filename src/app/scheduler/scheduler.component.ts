@@ -37,6 +37,7 @@ export class SchedulerComponent implements OnInit {
     } else if (this.operacao == 'rr') {
       if(!this.tempo){
         alert('Selecione o tempo');
+        return;
       }
       this.execProcessRr(data.processList);
     }
@@ -47,6 +48,7 @@ export class SchedulerComponent implements OnInit {
     let bloqList = new Array<any>(); // Lista para colocar os bloqueados
     let execList = new Array<any>(); // Lista para colocar o processo que está executando
     let ciclos  = 0; // Contar os ciclos
+    let countTempo = 1;
 
     while(processList.length > 0 || execList.length > 0 || bloqList.length > 0){ // Caso as listas estejam vazias terminou os precessos, saí do while
       debugger
@@ -94,15 +96,27 @@ export class SchedulerComponent implements OnInit {
       if(mandarListaBloq){ // Se precisa adicionar na lista de bloqueado
         bloqList.push(execList[0]); // Coloca processo na lista de bloqueados
         execList.splice(0,1); // Remove processo da lista de execução
+        countTempo = 1; // Se mandar pra lista de bloqueados o tempo do RR reinicia
       }
 
       ciclos++; // Incrementa o ciclo
 
       // Exibte informações no log para fins de debug
-      console.log('CICLO: ' + ciclos + ', PID: ' + pid + ', CPU: ' + cpu + ', PIDES: ' + pides + ' ES: ' + es);
+      console.log('CICLO: ' + ciclos + ', PID: ' + pid + ', CPU: ' + cpu + ', PIDES: ' + pides + ' ES: ' + es + ', TEMPO ' + countTempo);
       if(terminouProcesso){
+        countTempo = 0; // Se o processo temrinou o tempo do RR reinicia
         cpu = 0;
         console.log('PID: ' + pid + ' PRONTO');
+      }
+
+      if(countTempo == this.tempo){ // Se chegar no fim do tempoo do RR é preciso trocar o processo
+        processList.push(execList[0]); // Coloca o processo em execução na lista dos processos
+        execList.splice(0,1); // Remove o processo atual da lista de execução
+        execList.push(processList[0]); // Coloca o próximo processo apto na lista de execução
+        processList.splice(0,1); // Remove o processo que foi pra execução da lista de processos
+        countTempo = 1; // Tempo do RR volta pro começo
+      }else{ // Se não for o tempo igual soma
+        countTempo ++;  
       }
 
     }
@@ -203,6 +217,7 @@ export class SchedulerComponent implements OnInit {
         }
         if(execList[0].cycle[0] === null || execList[0].cycle[0] === undefined || execList[0].cycle[0] === ''){ // Se a lista de execução está vazia o processo terminou
           terminouProcesso = true; // Boolean para exibir no final que o processo terminou
+
           execList.splice(0,1); // remove da lista de execução (não sei se precisa)
         }else 
         if(execList[0].cycle[0].operation === 'ES'){ // Se ainda existir processo na lista de execução verifica se é ES
