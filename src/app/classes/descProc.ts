@@ -31,7 +31,6 @@ export class descProc {
                     let processCPU = new Object;
                     let cpu = 0;
                     if (operacao[x] == 'CPU') {
-                        //console.log(operacao[x])
                         cpu++
                         operacao.splice(operacao[x], 1)
                     }
@@ -41,14 +40,12 @@ export class descProc {
                             cycle: cpu,
                             status: 'apto'
                         }
-                        //processCPU.set('CPU', cpu)
                         process.cycle.push(processCPU)
                     }
 
                     let processES = new Object;
                     let es = 0;
                     if (operacao[x] == 'ES') {
-                        //console.log(operacao[x])
                         es++
                         operacao.splice(operacao[x], 1)
                     }
@@ -58,7 +55,6 @@ export class descProc {
                             cycle: es,
                             status: 'apto'
                         }
-                        //processES.set('ES', es)
                         process.cycle.push(processES)
                     }
                     x++
