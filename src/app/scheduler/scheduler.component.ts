@@ -9,8 +9,6 @@ import { descProc } from '../classes/descProc';
 })
 export class SchedulerComponent implements OnInit {
 
-  pid: string;
-
   @Input() operacao
   @Input() textArea;
   @Input() tempo;
@@ -50,7 +48,6 @@ export class SchedulerComponent implements OnInit {
     file = e.target.files[0];
     let fileReader = new FileReader();
     fileReader.onload = (e) => {
-      //console.log(fileReader.result);
       this.textArea = fileReader.result
     }
     fileReader.readAsText(file);
