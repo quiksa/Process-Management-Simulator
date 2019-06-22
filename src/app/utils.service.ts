@@ -14,9 +14,9 @@ export class UtilsService {
     let bloqList = new Array<any>(); // Lista para colocar os bloqueados
     let execList = new Array<any>(); // Lista para colocar o processo que está executando
     let ciclos = 0; // Contar os ciclos
+    let cycleList = new Array<any>() // Lista com os ciclos de cada processo
 
     while (processList.length > 0 || execList.length > 0 || bloqList.length > 0) { // Caso as listas estejam vazias terminou os precessos, saí do while
-      debugger
       let es = 0; // Contar as ES
       let pid = 0; // Salvar o PID que está sendo executao (usado somente para printar)
       let terminouProcesso = false; // Usado somente para printar se o processo terminou no final do while
@@ -40,10 +40,9 @@ export class UtilsService {
           terminouProcesso = true; // Boolean para exibir no final que o processo terminou
 
           execList.splice(0, 1); // remove da lista de execução (não sei se precisa)
-        } else
-          if (execList[0].cycle[0].operation === 'ES') { // Se ainda existir processo na lista de execução verifica se é ES
-            mandarListaBloq = true; // Boolean para indicar que é preciso mandor o processo para a lista de bloqueado
-          }
+        } else if (execList[0].cycle[0].operation === 'ES') { // Se ainda existir processo na lista de execução verifica se é ES
+          mandarListaBloq = true; // Boolean para indicar que é preciso mandor o processo para a lista de bloqueado
+        }
       }
 
       if (bloqList.length > 0) { // Se a lista de bloqueados não está vazia
@@ -70,10 +69,22 @@ export class UtilsService {
       console.log('CICLO: ' + ciclos + ', PID: ' + pid + ', CPU: ' + cpu + ', PIDES: ' + pides + ' ES: ' + es);
       if (terminouProcesso) {
         cpu = 0;
+        cycleList.push({
+          PID: pid,
+          cycles: ciclos
+        })
         console.log('PID: ' + pid + ' PRONTO');
       }
 
     }
+
+    let media = this.calculaMA(cycleList)
+
+    console.log('MA: ' + media + 'ms');
+
+    let dp = this.calculaDp(cycleList, media)
+
+    console.log('DP: ' + dp);
 
   }
 
@@ -83,6 +94,7 @@ export class UtilsService {
     let execList = new Array<any>(); // Lista para colocar o processo que está executando
     let ciclos = 0; // Contar os ciclos
     let countTempo = 1;
+    let cycleList = new Array<any>() // Lista com os ciclos de cada processo
 
     while (processList.length > 0 || execList.length > 0 || bloqList.length > 0) { // Caso as listas estejam vazias terminou os precessos, saí do while
       debugger
@@ -108,10 +120,9 @@ export class UtilsService {
         if (execList[0].cycle[0] === null || execList[0].cycle[0] === undefined || execList[0].cycle[0] === '') { // Se a lista de execução está vazia o processo terminou
           terminouProcesso = true; // Boolean para exibir no final que o processo terminou
           execList.splice(0, 1); // remove da lista de execução (não sei se precisa)
-        } else
-          if (execList[0].cycle[0].operation === 'ES') { // Se ainda existir processo na lista de execução verifica se é ES
-            mandarListaBloq = true; // Boolean para indicar que é preciso mandor o processo para a lista de bloqueado
-          }
+        } else if (execList[0].cycle[0].operation === 'ES') { // Se ainda existir processo na lista de execução verifica se é ES
+          mandarListaBloq = true; // Boolean para indicar que é preciso mandor o processo para a lista de bloqueado
+        }
       }
 
       if (bloqList.length > 0) { // Se a lista de bloqueados não está vazia
@@ -140,7 +151,12 @@ export class UtilsService {
       if (terminouProcesso) {
         countTempo = 0; // Se o processo temrinou o tempo do RR reinicia
         cpu = 0;
+        cycleList.push({
+          PID: pid,
+          cycles: ciclos
+        })
         console.log('PID: ' + pid + ' PRONTO');
+        
       }
 
       if (countTempo == tempo) { // Se chegar no fim do tempoo do RR é preciso trocar o processo
@@ -155,12 +171,21 @@ export class UtilsService {
 
     }
 
+    let media = this.calculaMA(cycleList)
+
+    console.log('MA: ' + media + 'ms');
+
+    let dp = this.calculaDp(cycleList, media)
+
+    console.log('DP: ' + dp);
+
   }
 
   public execProcessSjf(processList: Array<any>) {
     let bloqList = new Array<any>(); // Lista para colocar os bloqueados
     let execList = new Array<any>(); // Lista para colocar o processo que está executando
     let ciclos = 0; // Contar os ciclos
+    let cycleList = new Array<any>() // Lista com os ciclos de cada processo
 
     while (processList.length > 0 || execList.length > 0 || bloqList.length > 0) { // Caso as listas estejam vazias terminou os precessos, saí do while
       debugger
@@ -187,10 +212,9 @@ export class UtilsService {
         if (execList[0].cycle[0] === null || execList[0].cycle[0] === undefined || execList[0].cycle[0] === '') { // Se a lista de execução está vazia o processo terminou
           terminouProcesso = true; // Boolean para exibir no final que o processo terminou
           execList.splice(0, 1); // remove da lista de execução (não sei se precisa)
-        } else
-          if (execList[0].cycle[0].operation === 'ES') { // Se ainda existir processo na lista de execução verifica se é ES
-            mandarListaBloq = true; // Boolean para indicar que é preciso mandor o processo para a lista de bloqueado
-          }
+        } else if (execList[0].cycle[0].operation === 'ES') { // Se ainda existir processo na lista de execução verifica se é ES
+          mandarListaBloq = true; // Boolean para indicar que é preciso mandor o processo para a lista de bloqueado
+        }
       }
 
       if (bloqList.length > 0) { // Se a lista de bloqueados não está vazia
@@ -217,10 +241,23 @@ export class UtilsService {
       console.log('CICLO: ' + ciclos + ', PID: ' + pid + ', CPU: ' + cpu + ', PIDES: ' + pides + ' ES: ' + es);
       if (terminouProcesso) {
         cpu = 0;
+        cycleList.push({
+          PID: pid,
+          cycles: ciclos
+        })
         console.log('PID: ' + pid + ' PRONTO');
       }
 
     }
+
+    let media = this.calculaMA(cycleList)
+
+    console.log('MA: ' + media + 'ms');
+
+    let dp = this.calculaDp(cycleList, media)
+
+    console.log('DP: ' + dp);
+
   }
 
 
@@ -258,6 +295,27 @@ export class UtilsService {
 
     return processList;
 
+  }
+
+  private calculaMA(cycleList): number {
+    let sum = 0;
+    for (let index = 0; index < cycleList.length; index++) {
+      const data = cycleList[index];
+      sum = sum + data.cycles
+    }
+    return sum / cycleList.length - 1
+  }
+
+  private calculaDp(cycleList, media): string {
+    let valor = 0
+    let dp = 0
+    for (let index = 0; index < cycleList.length; index++) {
+      const data = cycleList[index];
+      valor = Math.pow(data.cycles - media, 2)
+    }
+    valor = valor + media
+    dp = Math.sqrt(valor / cycleList.length - 1)
+    return dp.toFixed(2)
   }
 
 }
