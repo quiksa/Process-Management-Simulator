@@ -18,13 +18,13 @@ export class UtilsService {
 
     while (processList.length > 0 || execList.length > 0 || bloqList.length > 0) { // Caso as listas estejam vazias terminou os precessos, saí do while
       let es = 0; // Contar as ES
-      let pid = 0; // Salvar o PID que está sendo executao (usado somente para printar)
-      let terminouProcesso = false; // Usado somente para printar se o processo terminou no final do while
+      let pid = 0; // Salvar o PID que está sendo executado (usado somente para exibir)
+      let terminouProcesso = false; // Usado somente para exibir se o processo terminou no final do while
       let mandarListaBloq = false; // Caso precise colocar um processo na lista de bloqueado é utilizado essa boolean (é adicionado um processo na lista de bloqueado somente no final do while)
       let cpu = 0; // Contar os CPU
       let pides = 0; // Exibir os ES dos processos expecíficos
 
-      if (processList.length > 0 && execList.length === 0) { // Caso exista processo e a lista de execução está vazia é preciso colocar o próximo processo para excutar
+      if (processList.length > 0 && execList.length === 0) { // Caso exista processo e a lista de execução está vazia é preciso colocar o próximo processo para executar
         if (processList[0].cycle[0].operation === 'CPU') { // se for CPU coloca na lista de execução e remove da lista de processos 
           execList.push(processList[0]); // Adicionando na lista de execuação
           processList.splice(0, 1); // Removendo da lista de processos
@@ -41,7 +41,7 @@ export class UtilsService {
 
           execList.splice(0, 1); // remove da lista de execução (não sei se precisa)
         } else if (execList[0].cycle[0].operation === 'ES') { // Se ainda existir processo na lista de execução verifica se é ES
-          mandarListaBloq = true; // Boolean para indicar que é preciso mandor o processo para a lista de bloqueado
+          mandarListaBloq = true; // Boolean para indicar que é preciso mandar o processo para a lista de bloqueado
         }
       }
 
@@ -52,7 +52,7 @@ export class UtilsService {
           es++; // Soma ES para exibir no final
         }
         if (bloqList[0].cycle[0].operation === 'CPU') { // Se a lista de bloqueado for CPU
-          processList.push(bloqList[0]); // Coloca de volta na lista de processos (apto)
+          processList.push(bloqList[0]); // Coloca de volta na lista de processos (aptos)
           bloqList.splice(0, 1); // Remove da lista de bloqueados
         }
 
@@ -99,8 +99,8 @@ export class UtilsService {
     while (processList.length > 0 || execList.length > 0 || bloqList.length > 0) { // Caso as listas estejam vazias terminou os precessos, saí do while
       debugger
       let es = 0; // Contar as ES
-      let pid = 0; // Salvar o PID que está sendo executao (usado somente para printar)
-      let terminouProcesso = false; // Usado somente para printar se o processo terminou no final do while
+      let pid = 0; // Salvar o PID que está sendo executao (usado somente para exibir)
+      let terminouProcesso = false; // Usado somente para exibir se o processo terminou no final do while
       let mandarListaBloq = false; // Caso precise colocar um processo na lista de bloqueado é utilizado essa boolean (é adicionado um processo na lista de bloqueado somente no final do while)
       let cpu = 0; // Contar os CPU
       let pides = 0; // Exibir os ES dos processos expecíficos
@@ -156,7 +156,6 @@ export class UtilsService {
           cycles: ciclos
         })
         console.log('PID: ' + pid + ' PRONTO');
-        
       }
 
       if (countTempo == tempo) { // Se chegar no fim do tempoo do RR é preciso trocar o processo
@@ -191,8 +190,8 @@ export class UtilsService {
       debugger
       processList = this.ordernarSjf(processList); // Ordena a lista
       let es = 0; // Contar as ES
-      let pid = 0; // Salvar o PID que está sendo executao (usado somente para printar)
-      let terminouProcesso = false; // Usado somente para printar se o processo terminou no final do while
+      let pid = 0; // Salvar o PID que está sendo executao (usado somente para exibir)
+      let terminouProcesso = false; // Usado somente para exibir se o processo terminou no final do while
       let mandarListaBloq = false; // Caso precise colocar um processo na lista de bloqueado é utilizado essa boolean (é adicionado um processo na lista de bloqueado somente no final do while)
       let cpu = 0; // Contar os CPU
       let pides = 0; // Exibir os ES dos processos expecíficos
@@ -213,7 +212,7 @@ export class UtilsService {
           terminouProcesso = true; // Boolean para exibir no final que o processo terminou
           execList.splice(0, 1); // remove da lista de execução (não sei se precisa)
         } else if (execList[0].cycle[0].operation === 'ES') { // Se ainda existir processo na lista de execução verifica se é ES
-          mandarListaBloq = true; // Boolean para indicar que é preciso mandor o processo para a lista de bloqueado
+          mandarListaBloq = true; // Boolean para indicar que é preciso mandar o processo para a lista de bloqueado
         }
       }
 
@@ -260,9 +259,7 @@ export class UtilsService {
 
   }
 
-
-
-  // Função para adicionar o total dos primeiros CPUS na lista de processo para fins de ordenação
+  // Função para adicionar o total dos primeiros CPUs na lista de processo para fins de ordenação
   private contarCPU(process: any) {
 
     let totalCPU = 0;
