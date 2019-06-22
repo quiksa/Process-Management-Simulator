@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output } from '@angular/core';
 import { UtilsService } from '../utils.service';
 import { descProc } from '../classes/descProc';
 
@@ -11,6 +11,7 @@ export class SchedulerComponent implements OnInit {
 
   @Input() operacao
   @Input() textArea;
+  @Input() logdata
   @Input() tempo;
 
   constructor(private utilService: UtilsService) { }
@@ -31,7 +32,7 @@ export class SchedulerComponent implements OnInit {
 
     let data = new descProc(this.textArea)
     if (this.operacao == 'fifo') {
-      this.utilService.execProcessFifo(data.processList)
+      this.logdata = this.utilService.execProcessFifo(data.processList)
     } else if (this.operacao == 'sjf') {
       this.utilService.execProcessSjf(data.processList);
     } else if (this.operacao == 'rr') {

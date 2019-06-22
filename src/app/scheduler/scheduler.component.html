@@ -34,7 +34,8 @@
         </div>
       </div>
       <button class="btn btn-outline-dark" (click)="start()">Iniciar</button>
-      <div >
-        <app-fcfs></app-fcfs>
+      <div style="margin-top: 10px">
+        <!-- <app-fcfs></app-fcfs> -->
+        <textarea style="overscroll-behavior-y: inherit" class="form-control txt-cpu" [(ngModel)]="logdata" placeholder=""></textarea>
       </div>
 </div>
