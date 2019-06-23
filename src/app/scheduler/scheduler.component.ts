@@ -34,13 +34,13 @@ export class SchedulerComponent implements OnInit {
     if (this.operacao == 'fifo') {
       this.logdata = this.utilService.execProcessFifo(data.processList)
     } else if (this.operacao == 'sjf') {
-      this.utilService.execProcessSjf(data.processList);
+      this.logdata = this.utilService.execProcessSjf(data.processList);
     } else if (this.operacao == 'rr') {
       if (!this.tempo) {
         alert('Selecione o tempo');
         return;
       }
-      this.utilService.execProcessRr(data.processList, this.tempo);
+      this.logdata = this.utilService.execProcessRr(data.processList, this.tempo);
     }
   }
 
