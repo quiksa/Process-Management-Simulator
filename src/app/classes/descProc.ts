@@ -24,6 +24,7 @@ export class descProc {
                 let array = element.split(':')
                 process.pid = array[0]
                 process.status = 'apto'
+                process.context = 0
                 process.cycle = new Array<Object>()
                 let operacao = array[1].split(';')
                 while (operacao.length > 0) {

@@ -117,6 +117,7 @@ export class UtilsService {
     let ciclos = 0; // Contar os ciclos
     let countTempo = 1;
     let cycleList = new Array<any>() // Lista com os ciclos de cada processo
+    let processListFinal = new Array<any>()
 
     while (processList.length > 0 || execList.length > 0 || bloqList.length > 0) { // Caso as listas estejam vazias terminou os precessos, saí do while
       let es = 0; // Contar as ES
@@ -128,6 +129,9 @@ export class UtilsService {
 
       if (processList.length > 0 && execList.length === 0) { // Caso exista processo e a lista de execução está vazia é preciso colocar o próximo processo para excutar
         if (processList[0].cycle[0].operation === 'CPU') { // se for CPU coloca na lista de execução e remove da lista de processos 
+          processList[0].status = 'executando' // passa para executando
+          processList[0].context = 1
+          debugger
           execList.push(processList[0]); // Adicionando na lista de execuação
           processList.splice(0, 1); // Removendo da lista de processos
         }
@@ -140,6 +144,8 @@ export class UtilsService {
         }
         if (execList[0].cycle[0] === null || execList[0].cycle[0] === undefined || execList[0].cycle[0] === '') { // Se a lista de execução está vazia o processo terminou
           terminouProcesso = true; // Boolean para exibir no final que o processo terminou
+          execList[0].context++
+          processListFinal.push(execList[0])
           execList.splice(0, 1); // remove da lista de execução (não sei se precisa)
         } else if (execList[0].cycle[0].operation === 'ES') { // Se ainda existir processo na lista de execução verifica se é ES
           mandarListaBloq = true; // Boolean para indicar que é preciso mandor o processo para a lista de bloqueado
@@ -153,6 +159,8 @@ export class UtilsService {
           es++; // Soma ES para exibir no final
         }
         if (bloqList[0].cycle[0].operation === 'CPU') { // Se a lista de bloqueado for CPU
+          bloqList[0].status = 'apto'
+          bloqList[0].context++ // contexto volta para lista de aptos
           processList.push(bloqList[0]); // Coloca de volta na lista de processos (apto)
           bloqList.splice(0, 1); // Remove da lista de bloqueados
         }
@@ -160,6 +168,8 @@ export class UtilsService {
       }
 
       if (mandarListaBloq) { // Se precisa adicionar na lista de bloqueado
+        execList[0].status = 'bloqueado'
+        execList[0].context++
         bloqList.push(execList[0]); // Coloca processo na lista de bloqueados
         execList.splice(0, 1); // Remove processo da lista de execução
         countTempo = 1; // Se mandar pra lista de bloqueados o tempo do RR reinicia
@@ -168,7 +178,12 @@ export class UtilsService {
       ciclos++; // Incrementa o ciclo
 
       // Exibte informações no log para fins de debug
-      console.log('CICLO: ' + ciclos + ', PID: ' + pid + ', CPU: ' + cpu + ', PIDES: ' + pides + ' ES: ' + es + ', TEMPO ' + countTempo);
+      console.log('CICLO: ' + ciclos + ', PID: ' + pid + ', CPU: ' + cpu + ', PID-ES: ' + pides + ' ES: ' + es + ', TEMPO ' + countTempo);
+      if (logdata) {
+        logdata += '\nCICLO: ' + ciclos + ', PID: ' + pid + ', CPU: ' + cpu + ', PID-ES: ' + pides + ' ES: ' + es + ', TEMPO ' + countTempo
+      } else {
+        logdata += 'CICLO: ' + ciclos + ', PID: ' + pid + ', CPU: ' + cpu + ', PID-ES: ' + pides + ' ES: ' + es + ', TEMPO ' + countTempo
+      }
       if (terminouProcesso) {
         countTempo = 0; // Se o processo temrinou o tempo do RR reinicia
         cpu = 0;
@@ -177,11 +192,19 @@ export class UtilsService {
           cycles: ciclos
         })
         console.log('PID: ' + pid + ' PRONTO');
+        logdata += '\n\tPID: ' + pid + ' PRONTO'
+
+        logdata += '\n\tTROCAS DE CONTEXTO: ' + processListFinal[0].context
+        console.log('TROCAS DE CONTEXTO: ' + processListFinal[0].context)
       }
 
       if (countTempo == tempo) { // Se chegar no fim do tempoo do RR é preciso trocar o processo
+        execList[0].status = 'apto'
+        execList[0].context++
         processList.push(execList[0]); // Coloca o processo em execução na lista dos processos
         execList.splice(0, 1); // Remove o processo atual da lista de execução
+        processList[0].status = 'executando'
+        processList[0].context++
         execList.push(processList[0]); // Coloca o próximo processo apto na lista de execução
         processList.splice(0, 1); // Remove o processo que foi pra execução da lista de processos
         countTempo = 1; // Tempo do RR volta pro começo
@@ -192,12 +215,14 @@ export class UtilsService {
     }
 
     let media = this.calculaMA(cycleList)
-
     console.log('MA: ' + media);
+    logdata += '\n\tMA: ' + media
 
     let dp = this.calculaDp(cycleList, media)
-
     console.log('DP: ' + dp);
+    logdata += '\n\tDP: ' + dp
+
+    return logdata
 
   }
 
