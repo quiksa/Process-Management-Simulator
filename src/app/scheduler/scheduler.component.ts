@@ -37,7 +37,7 @@ export class SchedulerComponent implements OnInit {
       this.logdata = this.utilService.execProcessSjf(data.processList);
     } else if (this.operacao == 'rr') {
       if (!this.tempo) {
-        alert('Selecione o tempo');
+        alert('Selecione o tempo!');
         return;
       }
       this.logdata = this.utilService.execProcessRr(data.processList, this.tempo);
