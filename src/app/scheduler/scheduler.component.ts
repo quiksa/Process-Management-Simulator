@@ -35,21 +35,27 @@ export class SchedulerComponent implements OnInit {
 
     let data = new descProc(this.textArea)
     if (this.operacao == 'fifo') {
-      let res;
-      res = this.utilService.execProcessFifo(data.processList)
-      this.logdata = res.log 
+      let res = this.utilService.execProcessFifo(data.processList)
+      this.logdata = res.log
       this.context = res.context
       this.dp = res.dp
       this.media = res.ma
-      debugger
     } else if (this.operacao == 'sjf') {
-      this.logdata = this.utilService.execProcessSjf(data.processList);
+      let res = this.utilService.execProcessSjf(data.processList)
+      this.logdata = res.log
+      this.context = res.context
+      this.dp = res.dp
+      this.media = res.ma
     } else if (this.operacao == 'rr') {
       if (!this.tempo) {
         alert('Selecione o tempo!');
         return;
       }
-      this.logdata = this.utilService.execProcessRr(data.processList, this.tempo);
+      let res = this.utilService.execProcessRr(data.processList, this.tempo);
+      this.logdata = res.log
+      this.context = res.context
+      this.dp = res.dp
+      this.media = res.ma
     }
   }
 

@@ -10,8 +10,8 @@ export class UtilsService {
   constructor() { }
 
 
-  public execProcessFifo(processList: Array<any>): Object {
-    let logdata = {
+  public execProcessFifo(processList: Array<any>) {
+    let data = {
       log: '',
       dp: '',
       context: '',
@@ -87,45 +87,50 @@ export class UtilsService {
 
       // Exibte informações no log para fins de debug
       console.log('CICLO: ' + ciclos + ', PID: ' + pid + ', CPU: ' + cpu + ', PID-ES: ' + pides + ' ES: ' + es);
-      if (logdata.log) {
-        logdata.log += '\nCICLO: ' + ciclos + ', PID: ' + pid + ', CPU: ' + cpu + ', PID-ES: ' + pides + ' ES: ' + es
+      if (data.log) {
+        data.log += '\nCICLO: ' + ciclos + ', PID: ' + pid + ', CPU: ' + cpu + ', PID-ES: ' + pides + ' ES: ' + es
       } else {
-        logdata.log += 'CICLO: ' + ciclos + ', PID: ' + pid + ', CPU: ' + cpu + ', PID-ES: ' + pides + ' ES: ' + es
+        data.log += 'CICLO: ' + ciclos + ', PID: ' + pid + ', CPU: ' + cpu + ', PID-ES: ' + pides + ' ES: ' + es
       }
       if (terminouProcesso) {
         cpu = 0;
         console.log('PID: ' + pid + ' PRONTO');
-        logdata.log += '\n\tPID: ' + pid + ' PRONTO'
+        data.log += '\n\tPID: ' + pid + ' PRONTO'
 
       }
       
     }
-    logdata.log += '\n\tTROCAS DE CONTEXTO: ' + (trocaContexto-1);
+    data.log += '\n\tTROCAS DE CONTEXTO: ' + (trocaContexto-1);
     console.log('TROCAS DE CONTEXTO: ' + (trocaContexto-1));
     
-    logdata.log += '\n\tTEMPO PARA CADA PROOCESSO COMEÇAR: '
+    data.log += '\n\tTEMPO PARA CADA PROOCESSO COMEÇAR: '
     for (let index = 0; index < cycleList.length; index++) {
-      logdata.log += '\n\tPID: ' + cycleList[index].PID + ", TEMPO: " + cycleList[index].cycles
+      data.log += '\n\tPID: ' + cycleList[index].PID + ", TEMPO: " + cycleList[index].cycles
       
     }
     let media = this.calculaMA(cycleList)
     console.log('MA: ' + media);
-    logdata.log += '\n\tMA: ' + media
+    data.log += '\n\tMA: ' + media
 
     let dp = this.calculaDp(cycleList, media)
     console.log('DP: ' + dp);
-    logdata.log += '\n\tDP: ' + dp
+    data.log += '\n\tDP: ' + dp
 
-    logdata.context = (trocaContexto-1).toString();
-    logdata.dp = dp
-    logdata.ma = (media).toString()
+    data.context = (trocaContexto-1).toString();
+    data.dp = dp
+    data.ma = (media).toString()
 
-    return logdata
+    return data
 
   }
 
   public execProcessRr(processList: Array<any>, tempo: number) {
-    let logdata = ''
+    let data = {
+      log: '',
+      dp: '',
+      context: '',
+      ma: ''
+    }
     let bloqList = new Array<any>(); // Lista para colocar os bloqueados
     let execList = new Array<any>(); // Lista para colocar o processo que está executando
     let ciclos = 0; // Contar os ciclos
@@ -197,16 +202,16 @@ export class UtilsService {
 
       // Exibte informações no log para fins de debug
       console.log('CICLO: ' + ciclos + ', PID: ' + pid + ', CPU: ' + cpu + ', PID-ES: ' + pides + ' ES: ' + es + ', TEMPO ' + countTempo);
-      if (logdata) {
-        logdata += '\nCICLO: ' + ciclos + ', PID: ' + pid + ', CPU: ' + cpu + ', PID-ES: ' + pides + ' ES: ' + es + ', TEMPO ' + countTempo
+      if (data.log) {
+        data.log += '\nCICLO: ' + ciclos + ', PID: ' + pid + ', CPU: ' + cpu + ', PID-ES: ' + pides + ' ES: ' + es + ', TEMPO ' + countTempo
       } else {
-        logdata += 'CICLO: ' + ciclos + ', PID: ' + pid + ', CPU: ' + cpu + ', PID-ES: ' + pides + ' ES: ' + es + ', TEMPO ' + countTempo
+        data.log += 'CICLO: ' + ciclos + ', PID: ' + pid + ', CPU: ' + cpu + ', PID-ES: ' + pides + ' ES: ' + es + ', TEMPO ' + countTempo
       }
       if (terminouProcesso) {
         countTempo = 0; // Se o processo temrinou o tempo do RR reinicia
         cpu = 0;
         console.log('PID: ' + pid + ' PRONTO');
-        logdata += '\n\tPID: ' + pid + ' PRONTO'
+        data.log += '\n\tPID: ' + pid + ' PRONTO'
 
       }
 
@@ -230,23 +235,32 @@ export class UtilsService {
         countTempo++;
       }
     }
-    logdata += '\n\tTROCAS DE CONTEXTO: ' + (trocaContexto);
+    data.log += '\n\tTROCAS DE CONTEXTO: ' + (trocaContexto);
     console.log('TROCAS DE CONTEXTO: ' + (trocaContexto));
 
     let media = this.calculaMA(cycleList)
     console.log('MA: ' + media);
-    logdata += '\n\tMA: ' + media
+    data.log += '\n\tMA: ' + media
 
     let dp = this.calculaDp(cycleList, media)
     console.log('DP: ' + dp);
-    logdata += '\n\tDP: ' + dp
+    data.log += '\n\tDP: ' + dp
 
-    return logdata
+    data.context = (trocaContexto-1).toString();
+    data.dp = dp
+    data.ma = (media).toString()
+
+    return data
 
   }
 
-  public execProcessSjf(processList: Array<any>): string {
-    let logdata = ''
+  public execProcessSjf(processList: Array<any>) {
+    let data = {
+      log: '',
+      dp: '',
+      context: '',
+      ma: ''
+    }
     let bloqList = new Array<any>(); // Lista para colocar os bloqueados
     let execList = new Array<any>(); // Lista para colocar o processo que está executando
     let ciclos = 0; // Contar os ciclos
@@ -319,31 +333,35 @@ export class UtilsService {
 
       // Exibte informações no log para fins de debug
       console.log('CICLO: ' + ciclos + ', PID: ' + pid + ', CPU: ' + cpu + ', PIDES: ' + pides + ' ES: ' + es);
-      if (logdata) {
-        logdata += '\nCICLO: ' + ciclos + ', PID: ' + pid + ', CPU: ' + cpu + ', PID-ES: ' + pides + ' ES: ' + es
+      if (data.log) {
+        data.log += '\nCICLO: ' + ciclos + ', PID: ' + pid + ', CPU: ' + cpu + ', PID-ES: ' + pides + ' ES: ' + es
       } else {
-        logdata += 'CICLO: ' + ciclos + ', PID: ' + pid + ', CPU: ' + cpu + ', PID-ES: ' + pides + ' ES: ' + es
+        data.log += 'CICLO: ' + ciclos + ', PID: ' + pid + ', CPU: ' + cpu + ', PID-ES: ' + pides + ' ES: ' + es
       }
       if (terminouProcesso) {
         cpu = 0;
         console.log('PID: ' + pid + ' PRONTO');
-        logdata += '\n\tPID: ' + pid + ' PRONTO'
+        data.log += '\n\tPID: ' + pid + ' PRONTO'
 
       }
       
     }
-    logdata += '\n\tTROCAS DE CONTEXTO: ' + (trocaContexto);
+    data.log += '\n\tTROCAS DE CONTEXTO: ' + (trocaContexto);
     console.log('TROCAS DE CONTEXTO: ' + (trocaContexto));
 
     let media = this.calculaMA(cycleList)
     console.log('MA: ' + media);
-    logdata += '\n\tMA: ' + media
+    data.log += '\n\tMA: ' + media
 
     let dp = this.calculaDp(cycleList, media)
     console.log('DP: ' + dp);
-    logdata += '\n\tDP: ' + dp
+    data.log += '\n\tDP: ' + dp
 
-    return logdata
+    data.context = (trocaContexto-1).toString();
+    data.dp = dp
+    data.ma = (media).toString()
+
+    return data
 
   }
 
