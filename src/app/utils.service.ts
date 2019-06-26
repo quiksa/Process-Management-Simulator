@@ -218,6 +218,12 @@ export class UtilsService {
         processList[0].status = 'executando'
         trocaContexto++;
         execList.push(processList[0]); // Coloca o próximo processo apto na lista de execução
+        if(this.naoAddPidIgualCiclo(cycleList, processList[0])){
+          cycleList.push({
+            PID: processList[0].pid,
+            cycles: ciclos
+          })
+        }
         processList.splice(0, 1); // Remove o processo que foi pra execução da lista de processos
         countTempo = 1; // Tempo do RR volta pro começo
       } else { // Se não for o tempo igual soma
@@ -377,7 +383,6 @@ export class UtilsService {
   }
 
   private calculaMA(cycleList): number {
-    debugger
     let finalListaCiclos = cycleList.length - 1;
     return cycleList[finalListaCiclos].cycles / cycleList.length 
   }
@@ -387,9 +392,9 @@ export class UtilsService {
     let dp = 0
     for (let index = 0; index < cycleList.length; index++) {
       const data = cycleList[index];
-      valor =+ Math.pow(data.cycles - media, 2)
+      valor += Math.pow(data.cycles - media, 2)
     }
-    valor = valor + media
+    //valor = valor + media
     dp = Math.sqrt(valor / cycleList.length - 1)
     return dp.toFixed(2)
   }
