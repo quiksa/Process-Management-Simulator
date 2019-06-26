@@ -13,6 +13,9 @@ export class SchedulerComponent implements OnInit {
   @Input() textArea;
   @Input() logdata
   @Input() tempo;
+  @Input() media;
+  @Input() dp;
+  @Input() context;
 
   constructor(private utilService: UtilsService) { }
 
@@ -32,7 +35,13 @@ export class SchedulerComponent implements OnInit {
 
     let data = new descProc(this.textArea)
     if (this.operacao == 'fifo') {
-      this.logdata = this.utilService.execProcessFifo(data.processList)
+      let res;
+      res = this.utilService.execProcessFifo(data.processList)
+      this.logdata = res.log 
+      this.context = res.context
+      this.dp = res.dp
+      this.media = res.ma
+      debugger
     } else if (this.operacao == 'sjf') {
       this.logdata = this.utilService.execProcessSjf(data.processList);
     } else if (this.operacao == 'rr') {

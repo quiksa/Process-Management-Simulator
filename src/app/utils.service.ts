@@ -10,8 +10,13 @@ export class UtilsService {
   constructor() { }
 
 
-  public execProcessFifo(processList: Array<any>): string {
-    let logdata = ''
+  public execProcessFifo(processList: Array<any>): Object {
+    let logdata = {
+      log: '',
+      dp: '',
+      context: '',
+      ma: ''
+    }
     let bloqList = new Array<any>(); // Lista para colocar os bloqueados
     let execList = new Array<any>(); // Lista para colocar o processo que está executando
     let ciclos = 0; // Contar os ciclos
@@ -82,34 +87,38 @@ export class UtilsService {
 
       // Exibte informações no log para fins de debug
       console.log('CICLO: ' + ciclos + ', PID: ' + pid + ', CPU: ' + cpu + ', PID-ES: ' + pides + ' ES: ' + es);
-      if (logdata) {
-        logdata += '\nCICLO: ' + ciclos + ', PID: ' + pid + ', CPU: ' + cpu + ', PID-ES: ' + pides + ' ES: ' + es
+      if (logdata.log) {
+        logdata.log += '\nCICLO: ' + ciclos + ', PID: ' + pid + ', CPU: ' + cpu + ', PID-ES: ' + pides + ' ES: ' + es
       } else {
-        logdata += 'CICLO: ' + ciclos + ', PID: ' + pid + ', CPU: ' + cpu + ', PID-ES: ' + pides + ' ES: ' + es
+        logdata.log += 'CICLO: ' + ciclos + ', PID: ' + pid + ', CPU: ' + cpu + ', PID-ES: ' + pides + ' ES: ' + es
       }
       if (terminouProcesso) {
         cpu = 0;
         console.log('PID: ' + pid + ' PRONTO');
-        logdata += '\n\tPID: ' + pid + ' PRONTO'
+        logdata.log += '\n\tPID: ' + pid + ' PRONTO'
 
       }
       
     }
-    logdata += '\n\tTROCAS DE CONTEXTO: ' + (trocaContexto-1);
+    logdata.log += '\n\tTROCAS DE CONTEXTO: ' + (trocaContexto-1);
     console.log('TROCAS DE CONTEXTO: ' + (trocaContexto-1));
     
-    logdata += '\n\tTEMPO PARA CADA PROOCESSO COMEÇAR: '
+    logdata.log += '\n\tTEMPO PARA CADA PROOCESSO COMEÇAR: '
     for (let index = 0; index < cycleList.length; index++) {
-      logdata += '\n\tPID: ' + cycleList[index].PID + ", TEMPO: " + cycleList[index].cycles
+      logdata.log += '\n\tPID: ' + cycleList[index].PID + ", TEMPO: " + cycleList[index].cycles
       
     }
     let media = this.calculaMA(cycleList)
     console.log('MA: ' + media);
-    logdata += '\n\tMA: ' + media
+    logdata.log += '\n\tMA: ' + media
 
     let dp = this.calculaDp(cycleList, media)
     console.log('DP: ' + dp);
-    logdata += '\n\tDP: ' + dp
+    logdata.log += '\n\tDP: ' + dp
+
+    logdata.context = (trocaContexto-1).toString();
+    logdata.dp = dp
+    logdata.ma = (media).toString()
 
     return logdata
 
@@ -378,7 +387,7 @@ export class UtilsService {
     let dp = 0
     for (let index = 0; index < cycleList.length; index++) {
       const data = cycleList[index];
-      valor = Math.pow(data.cycles - media, 2)
+      valor =+ Math.pow(data.cycles - media, 2)
     }
     valor = valor + media
     dp = Math.sqrt(valor / cycleList.length - 1)

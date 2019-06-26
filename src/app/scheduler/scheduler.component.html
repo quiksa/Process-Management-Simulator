@@ -38,4 +38,18 @@
         <!-- <app-fcfs></app-fcfs> -->
         <textarea style="overscroll-behavior-y: inherit" class="form-control txt-cpu" [(ngModel)]="logdata" placeholder=""></textarea>
       </div>
+      <div style="margin-top: 20px" class="row">
+        <div class="col-sm">
+          <label>MA:</label>
+          <input type="number" readonly [(ngModel)]="media" class="form-control" id="media" placeholder="Média">
+        </div>
+        <div class="col-sm">
+          <label>DP:</label>
+          <input type="number" readonly [(ngModel)]="dp" class="form-control" id="dp" placeholder="Desvio Padrão">
+        </div>
+        <div class="col-sm">
+          <label>Trocas de Contexto</label>
+          <input type="number" readonly [(ngModel)]="context" class="form-control" id="context" placeholder="Trocas de Contexto">
+        </div>
+      </div>
 </div>
