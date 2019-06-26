@@ -103,7 +103,7 @@ export class UtilsService {
     data.log += '\n\tTROCAS DE CONTEXTO: ' + (trocaContexto-1);
     console.log('TROCAS DE CONTEXTO: ' + (trocaContexto-1));
     
-    data.log += '\n\tTEMPO PARA CADA PROOCESSO COMEÇAR: '
+    data.log += '\n\tTEMPO PARA CADA PROCESSO COMEÇAR: '
     for (let index = 0; index < cycleList.length; index++) {
       data.log += '\n\tPID: ' + cycleList[index].PID + ", TEMPO: " + cycleList[index].cycles
       
@@ -217,7 +217,7 @@ export class UtilsService {
 
       if (countTempo == tempo) { // Se chegar no fim do tempoo do RR é preciso trocar o processo
         execList[0].status = 'apto'
-        execList[0].context++
+        //execList[0].context++
         processList.push(execList[0]); // Coloca o processo em execução na lista dos processos
         execList.splice(0, 1); // Remove o processo atual da lista de execução
         processList[0].status = 'executando'
@@ -246,7 +246,7 @@ export class UtilsService {
     console.log('DP: ' + dp);
     data.log += '\n\tDP: ' + dp
 
-    data.context = (trocaContexto-1).toString();
+    data.context = (trocaContexto).toString();
     data.dp = dp
     data.ma = (media).toString()
 
@@ -315,7 +315,7 @@ export class UtilsService {
         }
         if (bloqList[0].cycle[0].operation === 'CPU') { // Se a lista de bloqueado for CPU
           bloqList[0].status = 'apto'
-          bloqList[0].context++ // contexto volta para lista de aptos
+          //bloqList[0].context++ // contexto volta para lista de aptos
           processList.push(bloqList[0]); // Coloca de volta na lista de processos (apto)
           bloqList.splice(0, 1); // Remove da lista de bloqueados
         }
@@ -357,7 +357,7 @@ export class UtilsService {
     console.log('DP: ' + dp);
     data.log += '\n\tDP: ' + dp
 
-    data.context = (trocaContexto-1).toString();
+    data.context = (trocaContexto).toString();
     data.dp = dp
     data.ma = (media).toString()
 
