@@ -36,7 +36,7 @@ export class UtilsService {
       if (processList.length > 0 && execList.length === 0) { // Caso exista processo e a lista de execução está vazia é preciso colocar o próximo processo para executar
         if (processList[0].cycle[0].operation === 'CPU') { // se for CPU coloca na lista de execução e remove da lista de processos 
           processList[0].status = 'executando' // passa para executando
-          if(this.naoAddPidIgualCiclo(cycleList, processList[0])){
+          if (this.naoAddPidIgualCiclo(cycleList, processList[0])) {
             cycleList.push({
               PID: processList[0].pid,
               cycles: ciclos
@@ -98,15 +98,15 @@ export class UtilsService {
         data.log += '\n\tPID: ' + pid + ' PRONTO'
 
       }
-      
+
     }
-    data.log += '\n\tTROCAS DE CONTEXTO: ' + (trocaContexto-1);
-    console.log('TROCAS DE CONTEXTO: ' + (trocaContexto-1));
-    
+    data.log += '\n\tTROCAS DE CONTEXTO: ' + (trocaContexto - 1);
+    console.log('TROCAS DE CONTEXTO: ' + (trocaContexto - 1));
+
     data.log += '\n\tTEMPO PARA CADA PROCESSO COMEÇAR: '
     for (let index = 0; index < cycleList.length; index++) {
       data.log += '\n\tPID: ' + cycleList[index].PID + ", TEMPO: " + cycleList[index].cycles
-      
+
     }
     let media = this.calculaMA(cycleList)
     console.log('MA: ' + media);
@@ -116,7 +116,7 @@ export class UtilsService {
     console.log('DP: ' + dp);
     data.log += '\n\tDP: ' + dp
 
-    data.context = (trocaContexto-1).toString();
+    data.context = (trocaContexto - 1).toString();
     data.dp = dp
     data.ma = (media).toString()
 
@@ -150,7 +150,7 @@ export class UtilsService {
       if (processList.length > 0 && execList.length === 0) { // Caso exista processo e a lista de execução está vazia é preciso colocar o próximo processo para excutar
         if (processList[0].cycle[0].operation === 'CPU') { // se for CPU coloca na lista de execução e remove da lista de processos 
           processList[0].status = 'executando' // passa para executando
-          if(this.naoAddPidIgualCiclo(cycleList, processList[0])){
+          if (this.naoAddPidIgualCiclo(cycleList, processList[0])) {
             cycleList.push({
               PID: processList[0].pid,
               cycles: ciclos
@@ -223,7 +223,7 @@ export class UtilsService {
         processList[0].status = 'executando'
         trocaContexto++;
         execList.push(processList[0]); // Coloca o próximo processo apto na lista de execução
-        if(this.naoAddPidIgualCiclo(cycleList, processList[0])){
+        if (this.naoAddPidIgualCiclo(cycleList, processList[0])) {
           cycleList.push({
             PID: processList[0].pid,
             cycles: ciclos
@@ -281,7 +281,7 @@ export class UtilsService {
       if (processList.length > 0 && execList.length === 0) { // Caso exista processo e a lista de execução está vazia é preciso colocar o próximo processo para excutar
         if (processList[0].cycle[0].operation === 'CPU') { // se for CPU coloca na lista de execução e remove da lista de processos 
           processList[0].status = 'executando' // passa para executando
-          if(this.naoAddPidIgualCiclo(cycleList, processList[0])){
+          if (this.naoAddPidIgualCiclo(cycleList, processList[0])) {
             cycleList.push({
               PID: processList[0].pid,
               cycles: ciclos
@@ -344,7 +344,7 @@ export class UtilsService {
         data.log += '\n\tPID: ' + pid + ' PRONTO'
 
       }
-      
+
     }
     data.log += '\n\tTROCAS DE CONTEXTO: ' + (trocaContexto);
     console.log('TROCAS DE CONTEXTO: ' + (trocaContexto));
@@ -387,9 +387,6 @@ export class UtilsService {
   // Função para ordenar a lista de processos
   public ordernarSjf(processList: Array<any>) {
 
-    let listaOrdenada: Array<any>;
-    let maiorCPU = 0;
-
     processList.forEach((element, index) => {
       processList[index] = this.contarCPU(element);
     });
@@ -402,7 +399,7 @@ export class UtilsService {
 
   private calculaMA(cycleList): number {
     let finalListaCiclos = cycleList.length - 1;
-    return cycleList[finalListaCiclos].cycles / cycleList.length 
+    return cycleList[finalListaCiclos].cycles / cycleList.length
   }
 
   private calculaDp(cycleList, media): string {
@@ -412,14 +409,13 @@ export class UtilsService {
       const data = cycleList[index];
       valor += Math.pow(data.cycles - media, 2)
     }
-    //valor = valor + media
     dp = Math.sqrt(valor / cycleList.length - 1)
     return dp.toFixed(2)
   }
 
-  private naoAddPidIgualCiclo(cycleList, ciclo): boolean{
+  private naoAddPidIgualCiclo(cycleList, ciclo): boolean {
     for (let index = 0; index < cycleList.length; index++) {
-      if(cycleList[index].PID == ciclo.pid){
+      if (cycleList[index].PID == ciclo.pid) {
         return false;
       }
     }
