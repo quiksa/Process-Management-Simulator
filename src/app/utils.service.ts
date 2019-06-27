@@ -98,8 +98,8 @@ export class UtilsService {
       }
 
     }
-    data.log += '\n\tTROCAS DE CONTEXTO: ' + (trocaContexto - 1);
-    console.log('TROCAS DE CONTEXTO: ' + (trocaContexto - 1));
+    data.log += '\n\tTROCAS DE CONTEXTO: ' + (trocaContexto);
+    console.log('TROCAS DE CONTEXTO: ' + (trocaContexto));
 
     data.log += '\n\tTEMPO PARA CADA PROCESSO COMEÇAR: '
     for (let index = 0; index < cycleList.length; index++) {
@@ -114,7 +114,7 @@ export class UtilsService {
     console.log('DP: ' + dp);
     data.log += '\n\tDP: ' + dp
 
-    data.context = (trocaContexto - 1).toString();
+    data.context = (trocaContexto).toString();
     data.dp = dp
     data.ma = (media).toString()
 
@@ -393,7 +393,12 @@ export class UtilsService {
 
   private calculaMA(cycleList): number {
     let finalListaCiclos = cycleList.length - 1;
-    return cycleList[finalListaCiclos].cycles / cycleList.length
+    let soma = 0;
+    for (let index = 0; index < cycleList.length; index++) {
+      const element = cycleList[index];
+      soma += element.cycles;
+    }
+    return soma / cycleList.length
   }
 
   private calculaDp(cycleList, media): string {
